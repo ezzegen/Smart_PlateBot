@@ -1,11 +1,13 @@
 from aiogram import types, Dispatcher
+from aiogram.types import ReplyKeyboardRemove
 from create_bot import dp, bot
+from keyboards.client_kb import kb_client
 
 
 @dp.message_handler(commands=['start', 'help'])
 async def process_start(message: types.Message):
     try:
-        await bot.send_message(message.from_user.id, 'Приятного аппетита!')
+        await bot.send_message(message.from_user.id, 'Приятного аппетита!', reply_markup=kb_client)
         await message.delete()
     except:
         await message.reply('Общение с ботом через ЛС. Напишите ему: '
@@ -21,7 +23,7 @@ async def restaurant_open(message: types.Message):
 
 @dp.message_handler(commands='Расположение')
 async def restaurant_place(message: types.Message):
-    await bot.send_message(message.from_user.id, 'ул. Печорская, д.5')
+    await bot.send_message(message.from_user.id, 'ул. Печорская, д.5', reply_markup=ReplyKeyboardRemove())
 
 
 def register_handlers_client(dp: Dispatcher):

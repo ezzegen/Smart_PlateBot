@@ -1,10 +1,9 @@
 from aiogram import types, Dispatcher
 from aiogram.types import ReplyKeyboardRemove
-from create_bot import dp, bot
+from create_bot import bot
 from keyboards.client_kb import kb_client
 
 
-@dp.message_handler(commands=['start', 'help'])
 async def process_start(message: types.Message):
     try:
         await bot.send_message(message.from_user.id, 'Приятного аппетита!', reply_markup=kb_client)
@@ -15,13 +14,11 @@ async def process_start(message: types.Message):
         await message.delete()
 
 
-@dp.message_handler(commands='Режим_работы')
 async def restaurant_open(message: types.Message):
     await bot.send_message(message.from_user.id, 'Режим работы:\nПн-Пт с 08:00 до 21:00\n'
                                                  'Сб-Вс с 10:00 до 01:00')
 
 
-@dp.message_handler(commands='Расположение')
 async def restaurant_place(message: types.Message):
     await bot.send_message(message.from_user.id, 'ул. Печорская, д.5', reply_markup=ReplyKeyboardRemove())
 

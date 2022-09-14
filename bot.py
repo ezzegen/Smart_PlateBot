@@ -1,6 +1,7 @@
 import logging
 from aiogram.utils import executor
 from create_bot import dp
+from handlers import client, admin, other
 
 logging.basicConfig(level=logging.INFO)
 
@@ -8,8 +9,6 @@ logging.basicConfig(level=logging.INFO)
 async def on_startup(_):
     print('Бот вышел в онлайн')
 
-
-from handlers import client, admin, other
 
 client.register_handlers_client(dp)
 admin.register_handlers_admin(dp)

@@ -28,6 +28,14 @@ async def start_fsm(message: types.Message):
         await message.reply('Загрузите фото.')
 
 
+async def cancel_handler(message: types.Message, state: FSMContext):
+    current_state = await state.get_state()
+    if current_state is None:
+        return
+    await state.finish()
+    await message.reply('Ok')
+
+
 async def load_photo(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['photo'] = message.photo[0].file_id
@@ -57,20 +65,12 @@ async def load_price(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-async def cancel_handler(message: types.Message, state: FSMContext):
-    current_state = await state.get_state()
-    if current_state is None:
-        return
-    await state.finish()
-    await message.reply('Ok')
-
-
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(start_fsm, commands='Загрузить', state=None)
+    dp.register_message_handler(cancel_handler, state="*", commands='отмена')
+    dp.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
     dp.register_message_handler(load_photo, content_types=['photo'], state=FSMAdmin.photo)
     dp.register_message_handler(load_name, state=FSMAdmin.name)
     dp.register_message_handler(load_description, state=FSMAdmin.description)
     dp.register_message_handler(load_price, state=FSMAdmin.price)
-    dp.register_message_handler(cancel_handler, state="*", commands='отмена')
-    dp.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
-    dp.register_message_handler(make_changes_command, commads=['moderator'], is_chat_admin=True)
+    dp.register_message_handler(make_changes_command, commands=['moderator'], is_chat_admin=True)

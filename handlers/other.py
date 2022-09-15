@@ -9,9 +9,6 @@ async def echo_send(message: types.Message):
             .intersection(set(json.load(open('censor.json')))) != set():
         await message.reply('Мат в чате запрещен!')
         await message.delete()
-    else:
-        await message.answer('Нет такой команды. Попробуйте еще раз!')
-        await message.delete()
 
 
 def register_handlers_other(dp: Dispatcher):

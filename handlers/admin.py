@@ -4,7 +4,7 @@ from aiogram import types, Dispatcher
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher.filters import Text
 from create_bot import bot, dp
-from keyboards import but_case_admin
+from keyboards import but_case_admin, but_cancel_pack
 from data_base import sql_db
 
 ID = None
@@ -29,7 +29,7 @@ async def make_changes_command(message: types.Message):
 async def start_fsm(message: types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.photo.set()
-        await message.reply('Загрузите фото.', reply_markup=ReplyKeyboardRemove())
+        await message.reply('Загрузите фото.', reply_markup=but_cancel_pack)
 
 
 # forsed stop
@@ -45,21 +45,21 @@ async def load_photo(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['photo'] = message.photo[0].file_id
     await FSMAdmin.next()
-    await message.reply('Теперь введите название блюда.')
+    await message.reply('Теперь введите название блюда.', reply_markup=but_cancel_pack)
 
 
 async def load_name(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['name'] = message.text
     await FSMAdmin.next()
-    await message.reply('Введите описание блюда.')
+    await message.reply('Введите описание блюда.', reply_markup=but_cancel_pack)
 
 
 async def load_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['description'] = message.text
     await FSMAdmin.next()
-    await message.reply('Обозначьте цену.')
+    await message.reply('Обозначьте цену.', reply_markup=but_cancel_pack)
 
 
 async def load_price(message: types.Message, state: FSMContext):
@@ -67,7 +67,7 @@ async def load_price(message: types.Message, state: FSMContext):
         data['price'] = float(message.text)
     await sql_db.sql_add_command(state)
     await state.finish()
-    await bot.send_message(message.from_user.id, 'Всё сделано!')
+    await bot.send_message(message.from_user.id, 'Всё сделано!', reply_markup=but_case_admin)
 
 
 def register_handlers_admin(dp: Dispatcher):

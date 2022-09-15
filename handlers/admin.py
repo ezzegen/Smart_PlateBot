@@ -1,8 +1,11 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
+from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher.filters import Text
 from create_bot import bot, dp
+from keyboards import but_case_admin
+from data_base import sql_db
 
 ID = None
 
@@ -18,16 +21,18 @@ class FSMAdmin(StatesGroup):
 async def make_changes_command(message: types.Message):
     global ID
     ID = message.from_user.id
-    await bot.send_message(message.from_user.id, 'Чем могу помочь, уважаемый администратор?')
+    await bot.send_message(message.from_user.id, 'Чем могу помочь, уважаемый администратор?',
+                           reply_markup=but_case_admin)
     await message.delete()
 
 
 async def start_fsm(message: types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.photo.set()
-        await message.reply('Загрузите фото.')
+        await message.reply('Загрузите фото.', reply_markup=ReplyKeyboardRemove())
 
 
+# forsed stop
 async def cancel_handler(message: types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state is None:
@@ -60,9 +65,9 @@ async def load_description(message: types.Message, state: FSMContext):
 async def load_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['price'] = float(message.text)
-    async with state.proxy() as data:
-        await message.reply(str(data))
+    await sql_db.sql_add_command(state)
     await state.finish()
+    await bot.send_message(message.from_user.id, 'Всё сделано!')
 
 
 def register_handlers_admin(dp: Dispatcher):

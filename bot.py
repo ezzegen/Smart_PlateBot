@@ -1,6 +1,7 @@
 import logging
 from aiogram.utils import executor
 from create_bot import dp
+from data_base import sql_db
 from handlers import client, admin, other
 
 logging.basicConfig(level=logging.INFO)
@@ -8,6 +9,7 @@ logging.basicConfig(level=logging.INFO)
 
 async def on_startup(_):
     print('Бот вышел в онлайн')
+    sql_db.sql_start()
 
 
 client.register_handlers_client(dp)

@@ -1,7 +1,6 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram import types, Dispatcher
-from aiogram.types import ReplyKeyboardRemove
 from aiogram.dispatcher.filters import Text
 from create_bot import bot, dp
 from keyboards import but_case_admin, but_cancel_pack
@@ -38,7 +37,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     if current_state is None:
         return
     await state.finish()
-    await message.reply('Ok')
+    await message.reply('Ok', reply_markup=but_case_admin)
 
 
 async def load_photo(message: types.Message, state: FSMContext):

@@ -14,21 +14,23 @@ async def process_start(message: types.Message):
         await message.delete()
 
 
-async def restaurant_open(message: types.Message):
-    await bot.send_message(message.from_user.id, 'Режим работы:\nПн-Пт с 08:00 до 21:00\n'
-                                                 'Сб-Вс с 10:00 до 01:00')
+async def restaurant_open(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Режим работы:\nПн-Пт с 08:00 до 21:00\n'
+                                                        'Сб-Вс с 10:00 до 01:00')
 
 
-async def restaurant_place(message: types.Message):
-    await bot.send_message(message.from_user.id, 'ул. Печорская, д.5')
+async def restaurant_place(callback_query: types.CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'ул. Печорская, д.5')
 
 
-async def restaurant_menu(message: types.Message):
-    await sql_db.sql_read(message)
+async def restaurant_menu(callback_query: types.CallbackQuery):
+    await sql_db.sql_read(callback_query)
 
 
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(process_start, commands=['start', 'help'])
-    dp.register_message_handler(restaurant_open, commands='Режим_работы')
-    dp.register_message_handler(restaurant_place, commands='Расположение')
-    dp.register_message_handler(restaurant_menu, commands='Меню')
+    dp.register_callback_query_handler(restaurant_open, lambda x: x.data == 'open')
+    dp.register_callback_query_handler(restaurant_place, lambda x: x.data == 'place')
+    dp.register_callback_query_handler(restaurant_menu, lambda x: x.data == 'menu')

@@ -1,11 +1,12 @@
 from aiogram import types, Dispatcher
 from create_bot import bot, dp
 from keyboards.client_kb import kb_client
-from data_base import sql_db
+from data_base import sql_db_menu, sql_db_id
 
 
 async def process_start(message: types.Message):
     try:
+        sql_db_id.create_table_id(message)
         await bot.send_message(message.from_user.id, 'Приятного аппетита!', reply_markup=kb_client)
         await message.delete()
     except Exception:
@@ -26,7 +27,7 @@ async def restaurant_place(callback_query: types.CallbackQuery):
 
 
 async def restaurant_menu(callback_query: types.CallbackQuery):
-    await sql_db.sql_read(callback_query)
+    await sql_db_menu.sql_read(callback_query)
 
 
 def register_handlers_client(dp: Dispatcher):
